@@ -10,12 +10,12 @@ RUN cd server_base_server && dart pub get
 # Copy everything needed to build the server
 COPY server_base_server/ server_base_server/
 RUN dart pub get --offline && \
-    dart build cli -o build --define=start_server=server.dart
+    dart build cli -o build bin/main.dart
 
 # Minimal runtime image
 FROM dart:3.13
 WORKDIR /app
-COPY --from=build /app/server_base_server/build/ /app/server_base_server/
+COPY --from=build /app/server_base_server/build/ /app/server_base_server/build/
 COPY server_base_server/config/ /app/server_base_server/config/
 EXPOSE 8080 8081 8082
-ENTRYPOINT ["dart", "run", "start/main.dart"]
+ENTRYPOINT ["dart", "server_base_server/build/bin/main.dart"]
