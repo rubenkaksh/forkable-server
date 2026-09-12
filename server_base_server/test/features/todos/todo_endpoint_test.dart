@@ -98,10 +98,13 @@ void main() {
           );
           final session = builder.build();
           await expectLater(
-            TodoService(session).createMany(userId: 'user-1', requests: [
-              CreateTodoRequest(title: 'valid'),
-              CreateTodoRequest(title: ''),
-            ]),
+            TodoService(session).createMany(
+              userId: 'user-1',
+              requests: [
+                CreateTodoRequest(title: 'valid'),
+                CreateTodoRequest(title: ''),
+              ],
+            ),
             throwsA(isA<ValidationException>()),
           );
           final listed = await endpoints.todo.list(builder);

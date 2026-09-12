@@ -18,7 +18,9 @@ class TodoService {
       throw ValidationException(message: 'Title must not be empty');
     }
     if (title.length > 200) {
-      throw ValidationException(message: 'Title must be at most 200 characters');
+      throw ValidationException(
+        message: 'Title must be at most 200 characters',
+      );
     }
 
     final todo = Todo(
