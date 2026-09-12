@@ -13,8 +13,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'dart:io' as _idi;
-import 'package:server_base_server/src/generated/greetings/greeting.dart'
-    as _ifn1duxz;
+import 'package:server_base_server/src/generated/features/greetings/greeting.dart'
+    as _ivk5oyjd;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
@@ -504,7 +504,7 @@ class _GreetingEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_ifn1duxz.Greeting> hello(
+  _ida.Future<_ivk5oyjd.Greeting> hello(
     _ist.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -527,7 +527,7 @@ class _GreetingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ifn1duxz.Greeting>);
+                as _ida.Future<_ivk5oyjd.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

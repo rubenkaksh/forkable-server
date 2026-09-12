@@ -17,7 +17,7 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
-import '../greetings/greeting_endpoint.dart' as _il624ik7;
+import '../features/greetings/greeting_endpoint.dart' as _ishy82x1;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -35,7 +35,7 @@ class Endpoints extends _is.EndpointDispatch {
           'jwtRefresh',
           null,
         ),
-      'greeting': _il624ik7.GreetingEndpoint()
+      'greeting': _ishy82x1.GreetingEndpoint()
         ..initialize(
           server,
           'greeting',
@@ -266,7 +266,7 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['greeting'] as _il624ik7.GreetingEndpoint).hello(
+                  (endpoints['greeting'] as _ishy82x1.GreetingEndpoint).hello(
                     session,
                     params['name'],
                   ),

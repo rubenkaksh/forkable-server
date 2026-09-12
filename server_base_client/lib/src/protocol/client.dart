@@ -12,8 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'package:http/http.dart' as _i85jenna;
-import 'package:server_base_client/src/protocol/greetings/greeting.dart'
-    as _i8xc3qx1;
+import 'package:server_base_client/src/protocol/features/greetings/greeting.dart'
+    as _i7w9zsoc;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
@@ -256,8 +256,8 @@ class EndpointGreeting extends _isc.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _ida.Future<_i8xc3qx1.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i8xc3qx1.Greeting>(
+  _ida.Future<_i7w9zsoc.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i7w9zsoc.Greeting>(
         'greeting',
         'hello',
         {'name': name},
