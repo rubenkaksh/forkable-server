@@ -14,6 +14,10 @@ import 'dart:async' as _ida;
 import 'package:http/http.dart' as _i85jenna;
 import 'package:server_base_client/src/protocol/features/greetings/greeting.dart'
     as _i7w9zsoc;
+import 'package:server_base_client/src/protocol/features/todos/create_todo_request.dart'
+    as _ig82cgog;
+import 'package:server_base_client/src/protocol/features/todos/todo.dart'
+    as _iubzkgdj;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
@@ -264,6 +268,36 @@ class EndpointGreeting extends _isc.EndpointRef {
       );
 }
 
+/// Thin endpoint (plan §6): identity + delegation only.
+/// {@category Endpoint}
+class EndpointTodo extends _isc.EndpointRef {
+  EndpointTodo(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'todo';
+
+  _ida.Future<_iubzkgdj.Todo> create(_ig82cgog.CreateTodoRequest request) =>
+      caller.callServerEndpoint<_iubzkgdj.Todo>(
+        'todo',
+        'create',
+        {'request': request},
+      );
+
+  _ida.Future<List<_iubzkgdj.Todo>> list() =>
+      caller.callServerEndpoint<List<_iubzkgdj.Todo>>(
+        'todo',
+        'list',
+        {},
+      );
+
+  _ida.Future<_iubzkgdj.Todo> complete(int todoId) =>
+      caller.callServerEndpoint<_iubzkgdj.Todo>(
+        'todo',
+        'complete',
+        {'todoId': todoId},
+      );
+}
+
 class Modules {
   Modules(Client client) {
     serverpod_auth_idp = _iaic.Caller(client);
@@ -305,6 +339,7 @@ class Client extends _isc.ServerpodClientShared {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     greeting = EndpointGreeting(this);
+    todo = EndpointTodo(this);
     modules = Modules(this);
   }
 
@@ -314,6 +349,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointGreeting greeting;
 
+  late final EndpointTodo todo;
+
   late final Modules modules;
 
   @override
@@ -321,6 +358,7 @@ class Client extends _isc.ServerpodClientShared {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'greeting': greeting,
+    'todo': todo,
   };
 
   @override

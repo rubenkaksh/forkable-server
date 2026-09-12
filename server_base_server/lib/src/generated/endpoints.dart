@@ -10,6 +10,8 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:server_base_server/src/generated/features/todos/create_todo_request.dart'
+    as _idfxbvxm;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
@@ -18,6 +20,7 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../features/greetings/greeting_endpoint.dart' as _ishy82x1;
+import '../features/todos/todo_endpoint.dart' as _i7lkpyh4;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -39,6 +42,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'greeting',
+          null,
+        ),
+      'todo': _i7lkpyh4.TodoEndpoint()
+        ..initialize(
+          server,
+          'todo',
           null,
         ),
     };
@@ -270,6 +279,58 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['name'],
                   ),
+        ),
+      },
+    );
+    connectors['todo'] = _is.EndpointConnector(
+      name: 'todo',
+      endpoint: endpoints['todo']!,
+      methodConnectors: {
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_idfxbvxm.CreateTodoRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['todo'] as _i7lkpyh4.TodoEndpoint).create(
+                session,
+                params['request'],
+              ),
+        ),
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['todo'] as _i7lkpyh4.TodoEndpoint).list(session),
+        ),
+        'complete': _is.MethodConnector(
+          name: 'complete',
+          params: {
+            'todoId': _is.ParameterDescription(
+              name: 'todoId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['todo'] as _i7lkpyh4.TodoEndpoint).complete(
+                session,
+                params['todoId'],
+              ),
         ),
       },
     );

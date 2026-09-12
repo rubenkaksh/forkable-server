@@ -11,13 +11,19 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:server_base_client/src/protocol/features/todos/todo.dart'
+    as _iubzkgdj;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'features/greetings/greeting.dart' as _iabash66;
+import 'features/todos/create_todo_request.dart' as _iaxr2c1j;
+import 'features/todos/todo.dart' as _ibpzld66;
 export 'features/greetings/greeting.dart';
+export 'features/todos/create_todo_request.dart';
+export 'features/todos/todo.dart';
 export 'client.dart';
 
 class Protocol extends _isc.SerializationManager {
@@ -57,8 +63,25 @@ class Protocol extends _isc.SerializationManager {
     if (t == _iabash66.Greeting) {
       return _iabash66.Greeting.fromJson(data) as T;
     }
+    if (t == _iaxr2c1j.CreateTodoRequest) {
+      return _iaxr2c1j.CreateTodoRequest.fromJson(data) as T;
+    }
+    if (t == _ibpzld66.Todo) {
+      return _ibpzld66.Todo.fromJson(data) as T;
+    }
     if (t == _isc.getType<_iabash66.Greeting?>()) {
       return (data != null ? _iabash66.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iaxr2c1j.CreateTodoRequest?>()) {
+      return (data != null ? _iaxr2c1j.CreateTodoRequest.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ibpzld66.Todo?>()) {
+      return (data != null ? _ibpzld66.Todo.fromJson(data) : null) as T;
+    }
+    if (t == List<_iubzkgdj.Todo>) {
+      return (data as List).map((e) => deserialize<_iubzkgdj.Todo>(e)).toList()
+          as T;
     }
     try {
       return _iaic.Protocol().deserialize<T>(data, t);
@@ -72,6 +95,8 @@ class Protocol extends _isc.SerializationManager {
   static String? getClassNameForType(Type type) {
     return switch (type) {
       _iabash66.Greeting => 'Greeting',
+      _iaxr2c1j.CreateTodoRequest => 'CreateTodoRequest',
+      _ibpzld66.Todo => 'Todo',
       _ => null,
     };
   }
@@ -88,6 +113,10 @@ class Protocol extends _isc.SerializationManager {
     switch (data) {
       case _iabash66.Greeting():
         return 'Greeting';
+      case _iaxr2c1j.CreateTodoRequest():
+        return 'CreateTodoRequest';
+      case _ibpzld66.Todo():
+        return 'Todo';
     }
     className = _iaic.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -112,6 +141,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_iabash66.Greeting>(data['data']);
+    }
+    if (dataClassName == 'CreateTodoRequest') {
+      return deserialize<_iaxr2c1j.CreateTodoRequest>(data['data']);
+    }
+    if (dataClassName == 'Todo') {
+      return deserialize<_ibpzld66.Todo>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);

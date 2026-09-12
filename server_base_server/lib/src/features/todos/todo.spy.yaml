@@ -1,0 +1,10 @@
+class: Todo
+table: todos
+fields:
+  userId: String
+  title: String
+  isDone: bool
+  createdAt: DateTime
+indexes:
+  todos_userId_idx:
+    fields: userId

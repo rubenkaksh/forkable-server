@@ -11,6 +11,8 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:server_base_server/src/generated/features/todos/todo.dart'
+    as _iqylnza9;
 import 'package:serverpod/protocol.dart' as _isp;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
@@ -18,7 +20,11 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
 import 'features/greetings/greeting.dart' as _iabash66;
+import 'features/todos/create_todo_request.dart' as _iaxr2c1j;
+import 'features/todos/todo.dart' as _ibpzld66;
 export 'features/greetings/greeting.dart';
+export 'features/todos/create_todo_request.dart';
+export 'features/todos/todo.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
   Protocol._();
@@ -28,6 +34,62 @@ class Protocol extends _is.DatabaseSerializationManager {
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
+      name: 'todos',
+      dartName: 'Todo',
+      schema: 'public',
+      module: 'server_base',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'userId',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'title',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isDone',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'todos_userId_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._iais.Protocol.targetTableDefinitions,
     ..._iacs.Protocol.targetTableDefinitions,
     ..._isp.Protocol.targetTableDefinitions,
@@ -63,8 +125,25 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iabash66.Greeting) {
       return _iabash66.Greeting.fromJson(data) as T;
     }
+    if (t == _iaxr2c1j.CreateTodoRequest) {
+      return _iaxr2c1j.CreateTodoRequest.fromJson(data) as T;
+    }
+    if (t == _ibpzld66.Todo) {
+      return _ibpzld66.Todo.fromJson(data) as T;
+    }
     if (t == _is.getType<_iabash66.Greeting?>()) {
       return (data != null ? _iabash66.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iaxr2c1j.CreateTodoRequest?>()) {
+      return (data != null ? _iaxr2c1j.CreateTodoRequest.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ibpzld66.Todo?>()) {
+      return (data != null ? _ibpzld66.Todo.fromJson(data) : null) as T;
+    }
+    if (t == List<_iqylnza9.Todo>) {
+      return (data as List).map((e) => deserialize<_iqylnza9.Todo>(e)).toList()
+          as T;
     }
     try {
       return _iais.Protocol().deserialize<T>(data, t);
@@ -81,6 +160,8 @@ class Protocol extends _is.DatabaseSerializationManager {
   static String? getClassNameForType(Type type) {
     return switch (type) {
       _iabash66.Greeting => 'Greeting',
+      _iaxr2c1j.CreateTodoRequest => 'CreateTodoRequest',
+      _ibpzld66.Todo => 'Todo',
       _ => null,
     };
   }
@@ -97,6 +178,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     switch (data) {
       case _iabash66.Greeting():
         return 'Greeting';
+      case _iaxr2c1j.CreateTodoRequest():
+        return 'CreateTodoRequest';
+      case _ibpzld66.Todo():
+        return 'Todo';
     }
     className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -125,6 +210,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_iabash66.Greeting>(data['data']);
+    }
+    if (dataClassName == 'CreateTodoRequest') {
+      return deserialize<_iaxr2c1j.CreateTodoRequest>(data['data']);
+    }
+    if (dataClassName == 'Todo') {
+      return deserialize<_ibpzld66.Todo>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
@@ -165,6 +256,10 @@ class Protocol extends _is.DatabaseSerializationManager {
       if (table != null) {
         return table;
       }
+    }
+    switch (t) {
+      case _ibpzld66.Todo:
+        return _ibpzld66.Todo.t;
     }
     return null;
   }
