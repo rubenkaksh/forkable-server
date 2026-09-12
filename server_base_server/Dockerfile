@@ -1,58 +1,21 @@
-# Build from the project root with:
-# docker build -f server_base_server/Dockerfile .
-
-# Build stage
-FROM dart:3.12.2 AS build
-
-# Create a minimal workspace that preserves locked server dependency versions.
-WORKDIR /app
-COPY pubspec.lock .
-COPY server_base_server server_base_server
-RUN printf '%s\n' \
-  'name: _' \
-  'environment:' \
-  '  sdk: ^3.12.2' \
-  'workspace:' \
-  '  - server_base_server' \
-  > pubspec.yaml
-RUN dart pub get
-
-# Compile the server executable.
-WORKDIR /app/server_base_server
-RUN dart build cli --target bin/main.dart --output build
-RUN mv build/bundle/bin/main build/bundle/bin/server
-
-# Add a fallback for the copy of possibly missing directories.
-RUN mkdir -p config web migrations
-
-# Final stage
-FROM alpine:latest
+# Production image for Serverpod 4 (serverpod build cli pattern per plan §32).
+# The server package uses dart build cli which produces a bundle with native assets.
+FROM dart:3.13 AS build
 WORKDIR /app
 
-# Environment variables
-ENV runmode=production
-ENV serverid=default
-ENV logging=normal
-ENV role=monolith
+# Copy pubspec resolution artifacts first for layer caching
+COPY pubspec.yaml server_base_server/pubspec.yaml ./
+RUN cd server_base_server && dart pub get
 
-# Copy runtime dependencies
-COPY --from=build /runtime/ /
+# Copy everything needed to build the server
+COPY server_base_server/ server_base_server/
+RUN dart pub get --offline && \
+    dart build cli -o build --define=start_server=server.dart
 
-# Copy compiled server executable and native libraries
-COPY --from=build /app/server_base_server/build/bundle/ ./
-
-# Copy configuration files and resources
-COPY --from=build /app/server_base_server/config/ config/
-COPY --from=build /app/server_base_server/web/ web/
-COPY --from=build /app/server_base_server/migrations/ migrations/
-
-# This file is required to enable the endpoint log filter in Insights.
-COPY --from=build /app/server_base_server/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
-
-# Expose ports
-EXPOSE 8080
-EXPOSE 8081
-EXPOSE 8082
-
-# Define the entrypoint command
-ENTRYPOINT ./bin/server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+# Minimal runtime image
+FROM dart:3.13
+WORKDIR /app
+COPY --from=build /app/server_base_server/build/ /app/server_base_server/
+COPY server_base_server/config/ /app/server_base_server/config/
+EXPOSE 8080 8081 8082
+ENTRYPOINT ["dart", "run", "start/main.dart"]
