@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server_base_server
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.13.2
+
+      - name: Workspace pub get
+        run: dart pub get
+        working-directory: ./
+
+      - name: Generate
+        run: serverpod generate
+
+      - name: Fail on stale generated code
+        run: git diff --exit-code
+
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Test (embedded Postgres via test config)
+        run: dart test
+
+  flutter:
+    runs-on: ubuntu-latest
+    needs: server
+    defaults:
+      run:
+        working-directory: server_base_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.13.2
+
+      - name: Workspace pub get
+        run: dart pub get
+        working-directory: ./
+
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
