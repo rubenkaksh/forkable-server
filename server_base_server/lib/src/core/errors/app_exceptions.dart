@@ -58,3 +58,13 @@ class ConflictException extends AppException {
   @override
   String get description => message;
 }
+
+/// Thrown when a caller exceeds a rate limit (429-equivalent).
+class TooManyRequestsException extends AppException {
+  final String message;
+
+  TooManyRequestsException({this.message = 'Too many requests'});
+
+  @override
+  String get description => message;
+}
