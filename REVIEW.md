@@ -17,7 +17,9 @@ One real schema delta was found: the `serverpod_auth_idp` built-in rate-limiter 
 
 Re-verified: `serverpod generate` (zero diff), `dart analyze` (both packages, clean), `flutter analyze` (clean), `dart format` (clean), `dart test` (7/7 pass, including the transaction/rollback and auth-override paths that broke once already going into rc.2), `serverpod start` (boots, applies migration, HTTP 200).
 
-`server_base_client`/`server_base_flutter` pubspecs and `.github/workflows/tests.yml`'s `VERSION` pin updated to `4.0.0` accordingly.
+`server_base_client`/`server_base_flutter` pubspecs updated to `4.0.0` accordingly.
+
+**CI was also dry-run for the first time on this change** (resolves the other half of known limitation #1 — repo now has a remote and a real PR). It exposed two pre-existing bugs, unrelated to the version bump, that had simply never been exercised: `.github/workflows/ci.yml`'s jobs used plain `dart-lang/setup-dart` (no Flutter), so the pub *workspace* `pub get` failed immediately since `server_base_flutter` requires the Flutter SDK; and the `generate` step never installed the Serverpod CLI first. Fixed `ci.yml` to install Flutter (matching the plan's own CI pipeline: checkout → Dart/Flutter setup → pub get → generate → format → analyze → tests) and to `dart pub global activate serverpod_cli 4.0.0` before generating. Also removed `.github/workflows/format.yml`, `analyze.yml`, and `tests.yml` — leftover `serverpod create` scaffold defaults that duplicated `ci.yml`'s checks; `tests.yml` additionally used `docker compose` with separate Postgres/Redis containers, contradicting the plan's explicit "prefer embedded Postgres for CI" guidance (§31 CI database provisioning).
 
 ---
 
