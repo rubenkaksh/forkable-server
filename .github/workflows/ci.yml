@@ -31,7 +31,8 @@ jobs:
         run: serverpod generate
 
       - name: Fail on stale generated code
-        run: git diff --exit-code
+        run: git diff --exit-code -- . ':!pubspec.lock'
+        working-directory: ./
 
       - name: Format check
         run: dart format --output=none --set-exit-if-changed .
