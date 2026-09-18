@@ -52,7 +52,8 @@ jobs:
 
       - name: Warn if test step failed
         if: steps.test.outcome == 'failure'
-        run: echo "::warning::dart test failed on this CI runner -- tracked in issue #9, not blocking merge. Verify locally with 'dart test' in server_base_server."
+        run: |
+          echo "::warning::dart test failed on this CI runner -- tracked in issue #9, not blocking merge. Verify locally with 'dart test' in server_base_server."
 
       - name: Dump diagnostics on failure
         if: steps.test.outcome == 'failure'
