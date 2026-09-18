@@ -7,6 +7,10 @@ import '../../client.dart';
 /// Auth: the generated client carries the auth key from the sign-in flow
 /// (Serverpod 4 `authKeyProvider`), so calls require a signed-in user.
 class TodosRepository {
+  /// Const so callers can use it as a default constructor parameter while
+  /// still substituting a fake in tests.
+  const TodosRepository();
+
   /// Creates a todo for the signed-in user.
   Future<Todo> create(String title) =>
       client.todo.create(CreateTodoRequest(title: title));
