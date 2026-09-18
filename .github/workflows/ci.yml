@@ -41,7 +41,7 @@ jobs:
         run: dart analyze --fatal-infos
 
       - name: Test (embedded Postgres via test config)
-        run: dart test --chain-stack-traces --verbose-trace -r expanded --file-reporter=json:/tmp/test-results.json --concurrency=1
+        run: dart test --chain-stack-traces --verbose-trace -r expanded --file-reporter=json:/tmp/test-results.json -c vm:source
 
       - name: Dump diagnostics on failure
         if: failure()
