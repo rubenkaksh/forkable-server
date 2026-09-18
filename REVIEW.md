@@ -7,6 +7,20 @@
 
 ---
 
+## Update — 2026-09-18: rebaselined to Serverpod 4.0.0 stable
+
+Resolves known limitation #6 below. Serverpod CLI upgraded `4.0.0-rc.2` → `4.0.0` stable; all `serverpod`/`serverpod_*` package pins bumped to `4.0.0` across `server_base_server`, `server_base_client`, and `server_base_flutter`.
+
+Diffed against a freshly generated `4.0.0` stable scaffold (`server.dart`, pubspecs, Dockerfile). `server.dart` and generated code are unchanged from rc.2 — the app-level API surface documented above (`session.authenticated?.userIdentifier`, `orderBy` syntax, `client.todo` singular, transaction-test rollback flag) held steady on stable, no further app code changes were needed.
+
+One real schema delta was found: the `serverpod_auth_idp` built-in rate-limiter table (`serverpod_auth_idp_rate_limited_request_attempt`) changed shape between rc.2 and stable (part of the documented "Simplifies the RateLimiter utility on the serverpod_auth_idp module" breaking change in the 4.0.0 changelog). Migration `20260918100432479-serverpod-4-stable` recreates that table; it holds no application data, only transient rate-limit bookkeeping.
+
+Re-verified: `serverpod generate` (zero diff), `dart analyze` (both packages, clean), `flutter analyze` (clean), `dart format` (clean), `dart test` (7/7 pass, including the transaction/rollback and auth-override paths that broke once already going into rc.2), `serverpod start` (boots, applies migration, HTTP 200).
+
+`server_base_client`/`server_base_flutter` pubspecs and `.github/workflows/tests.yml`'s `VERSION` pin updated to `4.0.0` accordingly.
+
+---
+
 ## Implemented
 
 - **Phase 1 — Scaffold:** `serverpod create server_base --template fullstack --ide none`; server + generated client + Flutter app + `AGENTS.md` (Serverpod's own MCP-first agent rules).
