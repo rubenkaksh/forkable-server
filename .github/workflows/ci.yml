@@ -41,7 +41,7 @@ jobs:
         run: dart analyze --fatal-infos
 
       - name: Test (embedded Postgres via test config)
-        run: dart test --chain-stack-traces --verbose-trace
+        run: dart test --chain-stack-traces --verbose-trace -r expanded --file-reporter=json:/tmp/test-results.json
 
       - name: Dump diagnostics on failure
         if: failure()
@@ -57,7 +57,9 @@ jobs:
             cat "$f"
           done
           echo "----- core files -----"
-          find / -maxdepth 3 -iname "core*" -newer /tmp 2>/dev/null || true
+          find /home/runner/work -maxdepth 5 -iname "core*" 2>/dev/null || true
+          echo "----- json test-results (if any) -----"
+          cat /tmp/test-results.json 2>/dev/null || echo "(none written)"
 
   flutter:
     runs-on: ubuntu-latest
