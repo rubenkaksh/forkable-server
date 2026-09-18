@@ -48,6 +48,14 @@ class AuthRateLimits {
 void configureAuthServices(
   Serverpod pod, {
   required AuthRateLimits rateLimits,
+
+  /// Overrides for how verification codes are sent. Tests use this to
+  /// capture codes instead of logging them, so they can drive a full
+  /// registration/reset flow without a real mailbox. Production/development
+  /// leave these null and get the Serverpod Cloud behavior (logged locally,
+  /// emailed in staging/production).
+  SendRegistrationVerificationCodeFunction? sendRegistrationVerificationCode,
+  SendPasswordResetVerificationCodeFunction? sendPasswordResetVerificationCode,
 }) {
   RegistrationRateLimiter.instance = RegistrationRateLimiter(
     rateLimits.registrationStart,
@@ -70,8 +78,10 @@ void configureAuthServices(
       // Configure the email identity provider for email/password authentication.
       EmailIdpConfigFromPasswords(
         sendRegistrationVerificationCode:
+            sendRegistrationVerificationCode ??
             cloudEmailSending.sendRegistrationVerificationCode,
         sendPasswordResetVerificationCode:
+            sendPasswordResetVerificationCode ??
             cloudEmailSending.sendPasswordResetVerificationCode,
         failedLoginRateLimit: rateLimits.failedLogin,
         maxPasswordResetAttempts: rateLimits.passwordReset,
