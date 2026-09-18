@@ -41,17 +41,23 @@ jobs:
         run: dart analyze --fatal-infos
 
       - name: Test (embedded Postgres via test config)
-        run: dart test --chain-stack-traces --verbose-trace 2>&1 | tee /tmp/dart_test_output.log; exit ${PIPESTATUS[0]}
-        shell: bash
+        run: dart test --chain-stack-traces --verbose-trace
 
-      - name: Dump native build hook logs on failure
+      - name: Dump diagnostics on failure
         if: failure()
         working-directory: ./
         run: |
+          echo "----- free -h -----"
+          free -h || true
+          echo "----- dmesg (OOM check) -----"
+          sudo dmesg 2>/dev/null | grep -i "killed process\|out of memory\|oom" || echo "(no dmesg access or no OOM entries)"
+          echo "----- hooks_runner logs -----"
           for f in $(find .dart_tool/hooks_runner -type f \( -name stdout.txt -o -name stderr.txt \) 2>/dev/null); do
             echo "===== $f ====="
             cat "$f"
           done
+          echo "----- core files -----"
+          find / -maxdepth 3 -iname "core*" -newer /tmp 2>/dev/null || true
 
   flutter:
     runs-on: ubuntu-latest
