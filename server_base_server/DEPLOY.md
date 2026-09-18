@@ -1,5 +1,20 @@
 # Production Deploy
 
+## Docker image
+Build from the **repo root** (not `server_base_server/`), since the build stage needs `pubspec.lock`:
+```bash
+docker build -f server_base_server/Dockerfile -t server_base .
+```
+Two-stage build: `dart:3.12.2` compiles a self-contained bundle via `dart build cli` (a minimal single-member workspace pinned to the committed `pubspec.lock`, so the image gets the exact locked dependency versions — not the client/Flutter packages, which the server doesn't need), then an `alpine:latest` runtime stage copies only the bundle, `config/`, `web/`, `migrations/`, and `lib/src/generated/protocol.yaml` (required for the Insights endpoint log filter). Final image is ~29MB. Adapted from a fresh Serverpod 4.0.0 stable scaffold's own Dockerfile per plan §32/§43 — not the ad-hoc pattern this file used to describe.
+
+Verified locally: image builds successfully; a container started with production config (`ENTRYPOINT` reads `config/production.yaml`, passwords via `SERVERPOD_PASSWORD_*` env vars) connected to a throwaway Postgres over a Docker network, applied migrations on startup (`--apply-migrations`), and all three of Serverpod's built-in health probes returned `200`:
+```bash
+curl http://localhost:8080/livez     # process is up
+curl http://localhost:8080/readyz    # process + dependencies (DB) are healthy
+curl http://localhost:8080/startupz  # startup sequence completed
+```
+These are Kubernetes-style probes on the **API server** port (8080), not the web server — wire your orchestrator's liveness/readiness checks to them.
+
 ## Migration procedure
 Fresh deploy: apply committed migrations using maintenance role, fail fast if migration fails, never continue rollout on failure:
 ```bash
