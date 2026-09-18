@@ -1,7 +1,7 @@
 # server_base — Serverpod 4 MVP Backend Template
 
 Reusable backend template for rapid Flutter MVP development (plan: serverpod_4_mvp_backend_template.md).
-Serverpod **4.0.0-rc.2** (RC — re-verify APIs against stable release).
+Serverpod **4.0.0** (stable).
 
 ## Start (development)
 

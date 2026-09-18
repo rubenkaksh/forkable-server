@@ -32,8 +32,8 @@ dependencies:
   google_fonts: ^8.1.0
   server_base_client:
     path: ../server_base_client
-  serverpod_auth_idp_flutter: 4.0.0-rc.2
-  serverpod_flutter: 4.0.0-rc.2
+  serverpod_auth_idp_flutter: 4.0.0
+  serverpod_flutter: 4.0.0
 
 dev_dependencies:
   # Used for agents to drive the app through the Dart MCP
